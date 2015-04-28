@@ -5,6 +5,10 @@
 #include "bool.h"   // 位处理
 #include "tables.h"
 
+#include <android/log.h>
+#define LOG_TAG "Hong_des3"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+
 void BitsCopy(bool *DatOut,bool *DatIn,int Len);  // 数组复制
 
 void ByteToBit(bool *DatOut,char *DatIn,int Num); // 字节到位
@@ -21,8 +25,8 @@ void S_Change(bool DatOut[32],bool DatIn[48]);   // S盒变换
 void F_Change(bool DatIn[32],bool DatKi[48]);    // F函数
 
 void SetKey(char KeyIn[8]);                         // 设置密钥
-void PlayDes(char MesOut[8],char MesIn[8]);       // 执行DES加密
-void KickDes(char MesOut[8],char MesIn[8]);             // 执行DES解密
+void PlayDes(char MesOut[16],char MesIn[8]);       // 执行DES加密
+void KickDes(char MesOut[8],char MesIn[16]);             // 执行DES解密
 
 /*-------------------------------
  把DatIn开始的长度位Len位的二进制
@@ -188,7 +192,7 @@ void SetKey(char KeyIn[8])               // 设置密钥 获取子密钥Ki
     }
 }
 
-void PlayDes(char MesOut[8],char MesIn[8])  // 执行DES加密
+void PlayDes(char MesOut[16],char MesIn[8])  // 执行DES加密
 {                                           // 字节输入 Bin运算 Hex输出
     int i=0;
     static bool MesBit[64]={0};        // 明文二进制存储空间 64位
@@ -196,6 +200,7 @@ void PlayDes(char MesOut[8],char MesIn[8])  // 执行DES加密
     static bool *MiL=&MesBit[0],*MiR=&MesBit[32]; // 前32位 后32位
     ByteToBit(MesBit,MesIn,64);                 // 把明文换成二进制存入MesBit
     TablePermute(MesBit,MesBit,IP_Table,64);    // IP置换
+
     for(i=0;i<16;i++)                       // 迭代16次
     {
         BitsCopy(Temp,MiR,32);            // 临时存储
@@ -207,7 +212,7 @@ void PlayDes(char MesOut[8],char MesIn[8])  // 执行DES加密
     BitToHex(MesOut,MesBit,64);
 }
 
-void KickDes(char MesOut[8],char MesIn[8])       // 执行DES解密
+void KickDes(char MesOut[8],char MesIn[16])       // 执行DES解密
 {                                                // Hex输入 Bin运算 字节输出
     int i=0;
     static bool MesBit[64]={0};        // 密文二进制存储空间 64位

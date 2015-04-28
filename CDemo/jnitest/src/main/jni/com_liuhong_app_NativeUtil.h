@@ -13,15 +13,31 @@ extern "C" {
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_liuhong_app_NativeUtil_getServerUrl
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     com_liuhong_app_NativeUtil
  * Method:    getMd5
- * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ * Signature: (ILjava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_liuhong_app_NativeUtil_getMd5
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jclass, jint, jstring);
+
+/*
+ * Class:     com_liuhong_app_NativeUtil
+ * Method:    encrypt
+ * Signature: ([B[B)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_liuhong_app_NativeUtil_encrypt
+  (JNIEnv *, jclass, jbyteArray, jbyteArray);
+
+/*
+ * Class:     com_liuhong_app_NativeUtil
+ * Method:    decrypt
+ * Signature: ([B[B)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_liuhong_app_NativeUtil_decrypt
+  (JNIEnv *, jclass, jbyteArray, jbyteArray);
 
 #ifdef __cplusplus
 }

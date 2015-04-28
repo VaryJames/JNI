@@ -20,25 +20,114 @@ extern "C" {
 #include <sys/time.h>
 #include "md5.h"
 
-/*
-* Class:     cn_paypalm_easypay_protocol_VirgoClient
-* Method:    getServerUrl
-* Signature: ([BLjava/lang/String;)I
-*/
 jstring getServerUrl(JNIEnv *env, jclass obj)
 {
-    // LOGI("hello, this is my number %d log message!", 1);
-    //const char* pat = "http://192.168.22.84:8081/";
-
-
-    //jclass strClass = (*env)->FindClass(env, "java/lang/String");
-    // jmethodID ctorID = (*env)->GetMethodID(env, strClass, "<init>", "([BLjava/lang/String;)V");
-    // jbyteArray bytes = (*env)->NewByteArray(env, strlen(pat));
-    // (*env)->SetByteArrayRegion(env, bytes, 0, strlen(pat), (jbyte*)pat);
-    // jstring encoding = (*env)->NewStringUTF(env, "utf-8");
-    //LOGI("hello, this is my number %d log message!", 2);
-    //return (jstring)(*env)->NewObject(env, strClass, ctorID, bytes, encoding);
     return (*env)->NewStringUTF(env,"http://192.168.22.84:8081/");
+}
+
+jint decrypt(JNIEnv *env, jclass obj, jbyteArray inData, jbyteArray keyBytes, jobject joutdata){
+
+//    LOGI("decrypt %d",1);
+
+    char* inDataCp = (char*)(*env)->GetByteArrayElements(env,inData, 0);
+    char* keyDataCp = (char*)(*env)->GetByteArrayElements(env,keyBytes,0);
+
+    int inSize = (int)(*env)->GetArrayLength(env, inData);
+//    LOGI("decrypt inSize = %d",inSize);
+
+    int keySize = (int)(*env)->GetArrayLength(env, keyBytes);
+//    LOGI("decrypt keySize = %d",keySize);
+
+//    if(keySize !=8){
+//        LOGI("decrypt keySize error");
+//    }
+//
+//    if(inSize %16 !=0){
+//        LOGI("decrypt inData error");
+//    }
+
+    void SetKey(char KeyIn[8]);
+    void KickDes(char MesOut[8],char MesIn[16]);
+
+    SetKey(keyDataCp);
+    char outChars[8] ;
+    KickDes(outChars,inDataCp);
+
+    jbyteArray outByteArray;
+
+    outByteArray = (*env)-> NewByteArray(env, 8);
+    (*env)->SetByteArrayRegion(env, outByteArray, 0, 8, (jbyte*)outChars);
+
+    jclass cls = (*env)->GetObjectClass(env, joutdata);
+    jmethodID mid;
+    mid = (*env)->GetMethodID(env, cls, "setByteData", "([B)V");
+    (*env)->CallVoidMethod(env, joutdata, mid, outByteArray);
+
+//    mid = (*env)->GetMethodID(env, cls, "setDataLen", "(I)V");
+//    (*env)->CallVoidMethod(env, joutdata, mid, 16);
+
+    return 0;
+
+}
+
+jint encrypt(JNIEnv *env, jclass obj, jbyteArray inData, jbyteArray keyBytes, jobject joutdata){
+//    LOGI("encrypt %d",1);
+
+    char* inDataCp = (char*)(*env)->GetByteArrayElements(env,inData, 0);
+    char* keyDataCp = (char*)(*env)->GetByteArrayElements(env,keyBytes,0);
+
+    int inSize = (int)(*env)->GetArrayLength(env,inData);
+//    LOGI("encrypt inSize = %d",inSize);
+
+    int keySize = (int)(*env)->GetArrayLength(env,keyBytes);
+//    LOGI("encrypt keySize = %d",keySize);
+
+//    if(keySize !=8){
+//        LOGI("encrypt keySize error");
+//    }
+//
+//    if(inSize %8 !=0){
+//        LOGI("encrypt inData error");
+//    }
+
+    void SetKey(char KeyIn[8]);
+    void PlayDes(char MesOut[16],char MesIn[8]);
+
+    SetKey(keyDataCp);
+
+//    LOGI("encrypt SetKey %d",2);
+
+    char outChars[16] ;
+
+    int i;
+    PlayDes(outChars,inDataCp);
+//    LOGI("encrypt PlayDes %d",3);
+
+    jbyteArray outByteArray;
+
+    outByteArray = (*env)-> NewByteArray(env, 16);
+//    LOGI("encrypt %d",4);
+    (*env)->SetByteArrayRegion(env, outByteArray, 0, 16, (jbyte*)outChars);
+
+//    LOGI("encrypt %d",5);
+
+    jclass cls = (*env)->GetObjectClass(env, joutdata);
+    jmethodID mid;
+
+//    LOGI("encrypt %d",6);
+
+    mid = (*env)->GetMethodID(env, cls, "setByteData", "([B)V");
+    (*env)->CallVoidMethod(env, joutdata, mid, outByteArray);
+
+//    LOGI("encrypt %d",7);
+
+//    mid = (*env)->GetMethodID(env, cls, "setDataLen", "(I)V");
+//    (*env)->CallVoidMethod(env, joutdata, mid, 8);
+//
+//    LOGI("encrypt %d",8);
+
+    return 0;
+
 }
 
 jstring getMd5(JNIEnv *env, jobject obj, jint len,jstring str){
@@ -154,6 +243,8 @@ const static char* ppclasses[] = {
 const static JNINativeMethod mtCmd[] = {
     {"getServerUrl", "()Ljava/lang/String;", (jstring *) getServerUrl},
     {"getMd5", "(ILjava/lang/String;)Ljava/lang/String;", (jstring *) getMd5},
+    {"encrypt","([B[BLcom/liuhong/app/NativeData;)I",(jint *) encrypt},
+    {"decrypt","([B[BLcom/liuhong/app/NativeData;)I",(jint *) decrypt}
 };
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {

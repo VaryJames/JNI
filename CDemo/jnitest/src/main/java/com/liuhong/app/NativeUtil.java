@@ -1,9 +1,5 @@
 package com.liuhong.app;
 
-import android.text.TextUtils;
-
-import java.nio.charset.Charset;
-
 /**
  * Created by Administrator on 2015/4/14.
  */
@@ -13,9 +9,9 @@ public class NativeUtil {
         System.loadLibrary("ppsec");
     }
 
-    public String getMd5(String msg) {
+    public static String getMd5(String msg) {
 
-        if (TextUtils.isEmpty(msg)) {
+        if (msg == null || msg == "") {
             return "";
         }
 
@@ -25,9 +21,11 @@ public class NativeUtil {
 
     }
 
-    public native String getServerUrl();
+    public static native String getServerUrl();
 
-    public native String getMd5(int len, String str);
+    public static native String getMd5(int len, String str);
 
-    public native byte[] encrypt(byte[] inBytes,String key);
+    public static native int encrypt(byte[] inBytes, byte[] key,NativeData nativeData);
+
+    public static native int decrypt(byte[] inBytes, byte[] key,NativeData nativeData);
 }

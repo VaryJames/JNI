@@ -5,7 +5,7 @@ LOCAL_PATH := $(call my-dir)
 #ppsec
 include $(CLEAR_VARS)
 LOCAL_MODULE := ppsec
-LOCAL_SRC_FILES := PPSec.c md5.c
+LOCAL_SRC_FILES := PPSec.c md5.c des.c
 
 LOCAL_LDLIBS += -llog
 

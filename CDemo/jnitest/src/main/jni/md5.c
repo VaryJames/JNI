@@ -2,7 +2,7 @@
 #include "md5.h"
 
 #include <android/log.h>
-#define LOG_TAG "Hong"
+#define LOG_TAG "Hong_md5"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 #include <jni.h>
