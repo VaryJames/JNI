@@ -24,10 +24,16 @@ public class MainActivity extends Activity {
         NativeUtil util = new NativeUtil();
         text.setText("原值：1234567890!@#$%^&*()");
 //
-        textEnc.setText("md5:"+util.getMd5("1234567890!@#$%^&*()"));
+//        textEnc.setText("md5:"+util.getMd5("1234567890!@#$%^&*()"));
 
 
-        DesDemo demo = new DesDemo();
-        demo.test();
+//        DesDemo demo = new DesDemo();
+//        demo.test("海阔");
+
+        try {
+            Des3Demo demo3 = new Des3Demo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

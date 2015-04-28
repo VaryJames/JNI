@@ -1,7 +1,6 @@
 package com.liuhong.app;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -28,7 +27,7 @@ public class DesDemo {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
             SecretKey securekey = keyFactory.generateSecret(desKey);
             //Cipher对象实际完成加密操作
-            Cipher cipher = Cipher.getInstance("DES");
+            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
             //用密匙初始化Cipher对象
             cipher.init(Cipher.ENCRYPT_MODE, securekey, random);
             //现在，获取数据并加密
@@ -58,16 +57,16 @@ public class DesDemo {
         // 将DESKeySpec对象转换成SecretKey对象
         SecretKey securekey = keyFactory.generateSecret(desKey);
         // Cipher对象实际完成解密操作
-        Cipher cipher = Cipher.getInstance("DES");
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
         // 用密匙初始化Cipher对象
         cipher.init(Cipher.DECRYPT_MODE, securekey, random);
         // 真正开始解密操作
         return cipher.doFinal(src);
     }
 
-    public void test() {
-        //待加密内容
-        String str = "测试内容";
+    public void test(String str) {
+
+        System.out.println("test() -->> str = " + str);
         //密码，长度要是8的倍数
         String password = "12345678";
 
